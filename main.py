@@ -1,17 +1,17 @@
 import sys
+import random
 from PySide6 import QtCore, QtWidgets, QtGui
-from PySide6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QLabel
 
-class MyWidget(QWidget):
-    def __inti__(self):
-        super.__init__()
+class MyWidget(QtWidgets.QWidget):
+    def __init__(self):
+        super().__init__()
 
         self.hello = ["Hallo Welt", "Hei maailma", "Hola Mundo", "Привет мир"]
         
-        self.button = QPushButton("Click Me!")
-        self.text - QLabel("Hello World", alignment = QtCore.Qt.AlignCenter)
+        self.button = QtWidgets.QPushButton("Click Me!")
+        self.text = QtWidgets.QLabel("Hello World", alignment = QtCore.Qt.AlignCenter)
 
-        self.layout = QVBoxLayout(self)
+        self.layout = QtWidgets.QVBoxLayout(self)
         self.layout.addWidget(self.text)
         self.layout.addWidget(self.button)
         self.button.clicked.connect(self.magic)
