@@ -19,12 +19,12 @@ class CreateProjectWindow(QWidget):
         project_name_layout.addWidget(project_name_label)
         project_name_layout.addWidget(project_name)
 
-        #Project Location Layout
-        project_location_layout = QHBoxLayout()
-        project_location_label = QLabel("Project Location")
-        project_location_browser = QFileDialog()
-        project_location_layout.addWidget(project_location_label)
-        project_location_layout.addWidget(project_location_browser)
+        # #Project Location Layout
+        # project_location_layout = QHBoxLayout()
+        # project_location_label = QLabel("Project Location")
+        # project_location_browser = QFileDialog()
+        # project_location_layout.addWidget(project_location_label)
+        # project_location_layout.addWidget(project_location_browser)
 
         #Button Layout
         button_layout = QHBoxLayout()
@@ -36,7 +36,7 @@ class CreateProjectWindow(QWidget):
 
         v_layout = QVBoxLayout()
         v_layout.addLayout(project_name_layout)
-        v_layout.addLayout(project_location_layout)
+        # v_layout.addLayout(project_location_layout)
         v_layout.addLayout(button_layout)
 
         self.setLayout(v_layout)
