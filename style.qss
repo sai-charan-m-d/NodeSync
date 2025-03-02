@@ -7,7 +7,7 @@ QWidget {
 
 QLineEdit {
     background-color: #333333;
-    color: #414141;
+    color: #aaaaaa;
     font-size: 15px;
 }
 
