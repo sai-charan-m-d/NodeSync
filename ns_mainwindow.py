@@ -14,6 +14,8 @@ class MainWindow(QMainWindow):
         width = 800
         height = 600
         self.setMinimumSize(width, height)
+        central_widget = CreateProjectWindow()
+        self.setCentralWidget(central_widget)
 
         #creating the menu bar
         menubar = self.menuBar()

@@ -1,0 +1,23 @@
+QWidget {
+    background-color: #252424;
+    color: #ffffff;
+    padding: 10px;
+    font-size: 15px;
+}
+
+QLineEdit {
+    background-color: #949494;
+    color: #ffffff;
+    font-size: 15px;
+}
+
+QPushButton:hover{
+    background-color: #949494;
+}
+QPushButton:pressed{
+    background-color: #585858;
+}
+QMainWindow{
+    background-color: #585858;
+
+}
