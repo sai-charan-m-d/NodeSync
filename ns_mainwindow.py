@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QApplication, QMainWindow , QStatusBar
 from PySide6.QtGui import QIcon, QAction
 from ns_create_project_window import CreateProjectWindow
-
+from ns_list_widget import ProjectListWidget
 class MainWindow(QMainWindow):
     def __init__(self, app):
         super().__init__()
@@ -14,7 +14,7 @@ class MainWindow(QMainWindow):
         width = 800
         height = 600
         self.setMinimumSize(width, height)
-        central_widget = CreateProjectWindow()
+        central_widget = ProjectListWidget()
         self.setCentralWidget(central_widget)
 
         #creating the menu bar
@@ -40,4 +40,8 @@ class MainWindow(QMainWindow):
     
     def create_project_launch(self):
         self.widget = CreateProjectWindow()
+        self.widget.show()
+        
+    def list_widget(self):
+        self.widget = ProjectListWidget()
         self.widget.show()
