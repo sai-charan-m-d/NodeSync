@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import QWidget,QVBoxLayout,QLabel,QFileDialog,QPushButton,QLineEdit,QHBoxLayout,QTextEdit,QMessageBox
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QSettings
 import os
 import json
 
@@ -9,6 +9,7 @@ import json
 class CreateProjectWindow(QWidget):
     def __init__(self):
         super().__init__()
+        self.settings = QSettings("NodeSync", "Config")
         self.initUI()
     
     def initUI(self):
@@ -17,10 +18,13 @@ class CreateProjectWindow(QWidget):
         self.setGeometry(150,150,500,200)
         self.setWindowFlag(Qt.FramelessWindowHint)
 
+        default_project_dir = self.settings.value("project_dir", "")
+
         #Project Name Layout
         project_name_layout = QHBoxLayout()
         project_name_label = QLabel("Project Name")
         self.project_name = QLineEdit()
+        self.project_name.setPlaceholderText("Name of the Project")
         project_name_layout.addWidget(project_name_label)
         project_name_layout.addWidget(self.project_name)
 
@@ -28,6 +32,8 @@ class CreateProjectWindow(QWidget):
         project_location_layout = QHBoxLayout()
         project_location_label = QLabel("Project Location")
         self.project_location_textbox = QLineEdit()
+        self.project_location_textbox.setText(default_project_dir)
+    
         project_location_browser = QPushButton("Browse")
         project_location_browser.clicked.connect(self.choose_dir)
         project_location_layout.addWidget(project_location_label)
