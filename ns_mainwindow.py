@@ -2,6 +2,7 @@ from PySide6.QtWidgets import QApplication, QMainWindow , QStatusBar
 from PySide6.QtGui import QIcon, QAction
 from ns_create_project_window import CreateProjectWindow
 from ns_list_widget import ProjectListWidget
+from ns_settings_window import SettingsWindowWidget
 class MainWindow(QMainWindow):
     def __init__(self, app):
         super().__init__()
@@ -32,6 +33,11 @@ class MainWindow(QMainWindow):
         quit_action = file_menu.addAction("Quit")
         quit_action.triggered.connect(self.quit_app)
 
+        #Settings Menu
+        settings_menu = menubar.addMenu("&Settings")
+        create_settings_action = settings_menu.addAction("settings")
+        create_settings_action.triggered.connect(self.settings_launch)
+
         #statusBar
         self.setStatusBar(QStatusBar(self))
 
@@ -44,4 +50,8 @@ class MainWindow(QMainWindow):
         
     def list_widget(self):
         self.widget = ProjectListWidget()
+        self.widget.show()
+
+    def settings_launch(self):
+        self.widget = SettingsWindowWidget()
         self.widget.show()
