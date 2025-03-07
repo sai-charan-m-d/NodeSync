@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import QWidget,QVBoxLayout,QLabel,QFileDialog,QPushButton,QLineEdit,QHBoxLayout,QTextEdit,QMessageBox
 from PySide6.QtCore import Qt, QSettings
-from utils import folder_name_exists, project_exists
+from PySide6.QtGui import QCursor
+from utils import folder_name_exists, generate_meta_data
 import os
 import json
 
@@ -32,7 +33,7 @@ class CreateProjectWindow(QWidget):
         project_location_label = QLabel("Project Location")
         self.project_location_textbox = QLineEdit()
         self.project_location_textbox.setText(default_project_dir)
-        self.project_location_textbox.textChanged.connect(self.project_exists)
+        self.project_location_textbox.textChanged.connect(self.disable_create_button)
     
         project_location_browser = QPushButton("Browse")
         project_location_browser.clicked.connect(self.choose_dir)
@@ -45,7 +46,7 @@ class CreateProjectWindow(QWidget):
         self.create_button = QPushButton("Create Project")
 
         # Create Button Tool Tip
-        if project_exists:
+        if self.project_exists:
             self.create_button.setToolTip("Creates the folder structure")
         else:
             self.create_button.setToolTip("Creates the folder structure")
@@ -63,13 +64,13 @@ class CreateProjectWindow(QWidget):
         v_layout.addLayout(button_layout)
 
         self.setLayout(v_layout)
+        self.disable_create_button()
         self.show()
     
     def choose_dir(self):
         dir_path = QFileDialog.getExistingDirectory(self, "Select the Directory")
         if dir_path:
             self.project_location_textbox.setText(str(dir_path))
-            self.project_exists()
 
     def load_folder_structure(self):
         with open("NodeSync/folder_structure.json","r") as f:
@@ -98,7 +99,11 @@ class CreateProjectWindow(QWidget):
                 for sub_folder in sub_folders:
                     os.makedirs(os.path.join(main_folder_path, sub_folder), exist_ok=True)
             
-            QMessageBox.information(self, "Success", f"Project Created at:\n{project_folder}")
+            metadata = generate_meta_data(project_name_text,project_folder,folder_structure)
+            if metadata:
+                QMessageBox.information(self, "Success", f"Project Created at:\n{project_folder}")
+            else:
+                QMessageBox.warning(self, "Error", "Failed to create metadata.")
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Failed to create folders:\n{e}")
         
@@ -111,13 +116,13 @@ class CreateProjectWindow(QWidget):
     def project_exists(self):
         proj_name = self.project_name.text().strip()
         proj_path = self.project_location_textbox.text().strip()
-        if folder_name_exists(proj_name, proj_path):
-            return True
-        else:
-            return False
+
+        return folder_name_exists(proj_name, proj_path)
 
     def disable_create_button(self):
         if self.project_exists():
             self.create_button.setEnabled(False)
+            self.create_button.setCursor(QCursor(Qt.ForbiddenCursor))
         else:
             self.create_button.setEnabled(True)
+            self.create_button.setCursor(QCursor(Qt.PointingHandCursor))
