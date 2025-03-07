@@ -25,6 +25,10 @@ QPushButton:hover{
 QPushButton:pressed{
     background-color: #585858;
 }
+QPushButton:disabled {
+    background-color: #ff0000;
+}
+
 QMainWindow{
     background-color: #ff1f1e1e;
     border-style: solid;
