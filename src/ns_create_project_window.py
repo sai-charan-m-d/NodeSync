@@ -32,7 +32,7 @@ class CreateProjectWindow(QWidget):
         project_location_label = QLabel("Project Location")
         self.project_location_textbox = QLineEdit()
         self.project_location_textbox.setText(default_project_dir)
-        self.project_location_textbox.textChanged.connect(self.project_folder_exists)
+        self.project_location_textbox.textChanged.connect(self.project_exists)
     
         project_location_browser = QPushButton("Browse")
         project_location_browser.clicked.connect(self.choose_dir)
@@ -69,7 +69,7 @@ class CreateProjectWindow(QWidget):
         dir_path = QFileDialog.getExistingDirectory(self, "Select the Directory")
         if dir_path:
             self.project_location_textbox.setText(str(dir_path))
-            self.project_folder_exists()
+            self.project_exists()
 
     def load_folder_structure(self):
         with open("NodeSync/folder_structure.json","r") as f:
@@ -117,7 +117,7 @@ class CreateProjectWindow(QWidget):
             return False
 
     def disable_create_button(self):
-        if project_exists():
+        if self.project_exists():
             self.create_button.setEnabled(False)
         else:
             self.create_button.setEnabled(True)

@@ -1,8 +1,8 @@
 from PySide6.QtWidgets import QApplication, QMainWindow , QStatusBar
 from PySide6.QtGui import QIcon, QAction
-from ns_create_project_window import CreateProjectWindow
-from ns_list_widget import ProjectListWidget
-from ns_settings_window import SettingsWindowWidget
+from src.ns_create_project_window import CreateProjectWindow
+from src.ns_list_widget import ProjectListWidget
+from src.ns_settings_window import SettingsWindowWidget
 class MainWindow(QMainWindow):
     def __init__(self, app):
         super().__init__()
