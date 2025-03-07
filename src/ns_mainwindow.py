@@ -45,7 +45,7 @@ class MainWindow(QMainWindow):
         self.app.quit()
     
     def create_project_launch(self):
-        self.widget = CreateProjectWindow()
+        self.widget = CreateProjectWindow(self)
         self.widget.show()
         
     def list_widget(self):

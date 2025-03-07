@@ -1,15 +1,18 @@
 from PySide6.QtWidgets import QWidget,QVBoxLayout,QLabel,QFileDialog,QPushButton,QLineEdit,QHBoxLayout,QTextEdit,QMessageBox
-from PySide6.QtCore import Qt, QSettings
+from PySide6.QtCore import Qt, QSettings,QPoint
 from PySide6.QtGui import QCursor
 from utils import folder_name_exists, generate_meta_data
 import os
 import json
 
 class CreateProjectWindow(QWidget):
-    def __init__(self):
+    def __init__(self, main_window=None):
         super().__init__()
+        self.main_window = main_window
         self.settings = QSettings("NodeSync", "Config")
+        self.offset = QPoint()
         self.initUI()
+        self.center_within_main()
     
     def initUI(self):
         self.setWindowTitle("Create Project")
@@ -65,6 +68,13 @@ class CreateProjectWindow(QWidget):
         self.setLayout(v_layout)
         self.disable_create_button()
         self.show()
+    
+    def center_within_main(self):
+        if self.main_window:
+            main_geometry = self.main_window.geometry()
+            new_x = main_geometry.x() + (main_geometry.width() - self.width()) // 2 
+            new_y = main_geometry.y() + (main_geometry.height() - self.height()) // 2
+            self.move(QPoint(new_x,new_y))
     
     def choose_dir(self):
         dir_path = QFileDialog.getExistingDirectory(self, "Select the Directory")
@@ -125,3 +135,23 @@ class CreateProjectWindow(QWidget):
         else:
             self.create_button.setEnabled(True)
             self.create_button.setCursor(QCursor(Qt.PointingHandCursor))
+
+    # Mouse Events to move the Widget
+    def mousePressEvent(self, event):
+        """Detects mouse click and stores the offset."""
+        if event.button() == Qt.LeftButton:
+            self.dragging = True  
+            self.offset = event.globalPosition().toPoint() - self.pos() 
+            event.accept()
+
+    def mouseMoveEvent(self, event):
+        """Moves the window while dragging."""
+        if self.dragging:
+            self.move(event.globalPosition().toPoint() - self.offset) 
+            event.accept()
+
+    def mouseReleaseEvent(self, event):
+        """Stops dragging when mouse button is released."""
+        if event.button() == Qt.LeftButton:
+            self.dragging = False 
+            event.accept()
