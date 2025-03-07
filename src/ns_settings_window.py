@@ -1,8 +1,8 @@
 from PySide6.QtWidgets import QApplication, QMainWindow , QStatusBar, QWidget, QLineEdit, QLabel, QPushButton, QHBoxLayout,QVBoxLayout, QFileDialog
 from PySide6.QtGui import QIcon, QAction
 from PySide6.QtCore import QSettings
-from ns_create_project_window import CreateProjectWindow
-from ns_list_widget import ProjectListWidget
+from src.ns_create_project_window import CreateProjectWindow
+from src.ns_list_widget import ProjectListWidget
 
 class SettingsWindowWidget(QWidget):
     def __init__(self):
