@@ -1,10 +1,8 @@
 from PySide6.QtWidgets import QWidget,QVBoxLayout,QLabel,QFileDialog,QPushButton,QLineEdit,QHBoxLayout,QTextEdit,QMessageBox
 from PySide6.QtCore import Qt, QSettings
+from utils import folder_name_exists, project_exists
 import os
 import json
-
-#from PySide6.QtCore import 
-#from PySide6.QtGui import
 
 class CreateProjectWindow(QWidget):
     def __init__(self):
@@ -25,6 +23,7 @@ class CreateProjectWindow(QWidget):
         project_name_label = QLabel("Project Name")
         self.project_name = QLineEdit()
         self.project_name.setPlaceholderText("Name of the Project")
+        self.project_name.textChanged.connect(self.disable_create_button)
         project_name_layout.addWidget(project_name_label)
         project_name_layout.addWidget(self.project_name)
 
@@ -33,6 +32,7 @@ class CreateProjectWindow(QWidget):
         project_location_label = QLabel("Project Location")
         self.project_location_textbox = QLineEdit()
         self.project_location_textbox.setText(default_project_dir)
+        self.project_location_textbox.textChanged.connect(self.project_folder_exists)
     
         project_location_browser = QPushButton("Browse")
         project_location_browser.clicked.connect(self.choose_dir)
@@ -42,16 +42,21 @@ class CreateProjectWindow(QWidget):
 
         #Button Layout
         button_layout = QHBoxLayout()
-        create_button = QPushButton("Create Project")
-        create_button.setToolTip("Creates the folder structure")
+        self.create_button = QPushButton("Create Project")
+
+        # Create Button Tool Tip
+        if project_exists:
+            self.create_button.setToolTip("Creates the folder structure")
+        else:
+            self.create_button.setToolTip("Creates the folder structure")
+
         cancel_button = QPushButton("Cancel")
         cancel_button.setToolTip("Cancel the Folder Creation")
-        button_layout.addWidget(create_button)
+        button_layout.addWidget(self.create_button)
         button_layout.addWidget(cancel_button)
-        create_button.clicked.connect(self.create_project_folders)
+        self.create_button.clicked.connect(self.create_project_folders)
         cancel_button.clicked.connect(self.quit_widget)
-
-
+ 
         v_layout = QVBoxLayout()
         v_layout.addLayout(project_name_layout)
         v_layout.addLayout(project_location_layout)
@@ -62,10 +67,12 @@ class CreateProjectWindow(QWidget):
     
     def choose_dir(self):
         dir_path = QFileDialog.getExistingDirectory(self, "Select the Directory")
-        self.project_location_textbox.setText(str(dir_path))
+        if dir_path:
+            self.project_location_textbox.setText(str(dir_path))
+            self.project_folder_exists()
 
     def load_folder_structure(self):
-        with open("E:/01_WORK/01_PROJ/NODESYNC/NodeSync/folder_structure.json","r") as f:
+        with open("NodeSync/folder_structure.json","r") as f:
             return json.load(f)
     
     def create_project_folders(self):
@@ -91,7 +98,7 @@ class CreateProjectWindow(QWidget):
                 for sub_folder in sub_folders:
                     os.makedirs(os.path.join(main_folder_path, sub_folder), exist_ok=True)
             
-            QMessageBox.information(self, "Success", "Project Created at:\n{dir_path}")
+            QMessageBox.information(self, "Success", f"Project Created at:\n{project_folder}")
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Failed to create folders:\n{e}")
         
@@ -100,3 +107,17 @@ class CreateProjectWindow(QWidget):
     def quit_widget(self):
         QMessageBox.information(self, "Cancelled", "Project creation cancelled")
         self.close()
+
+    def project_exists(self):
+        proj_name = self.project_name.text().strip()
+        proj_path = self.project_location_textbox.text().strip()
+        if folder_name_exists(proj_name, proj_path):
+            return True
+        else:
+            return False
+
+    def disable_create_button(self):
+        if project_exists():
+            self.create_button.setEnabled(False)
+        else:
+            self.create_button.setEnabled(True)
