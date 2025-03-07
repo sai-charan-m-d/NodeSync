@@ -1,36 +1,66 @@
-from PySide6.QtWidgets import QApplication, QMainWindow , QStatusBar, QWidget, QLineEdit, QLabel, QPushButton, QHBoxLayout,QVBoxLayout, QFileDialog
-from PySide6.QtGui import QIcon, QAction
+from PySide6.QtWidgets import QApplication, QWidget, QLineEdit, QLabel, QPushButton, QHBoxLayout, QVBoxLayout, QFileDialog
 from PySide6.QtCore import QSettings
-from src.ns_create_project_window import CreateProjectWindow
-from src.ns_list_widget import ProjectListWidget
 
 class SettingsWindowWidget(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Settings")
+        self.settings = QSettings("NodeSync", "Config")
 
-        self.settings = QSettings("Project Directory")
+        #  Project Directory Settings
+        self.project_label = QLabel("Default Project Directory")
+        self.project_dir_text = QLineEdit()
+        self.project_browse = QPushButton("Browse")
+        self.project_dir_text.setText(self.settings.value("project_dir", ""))
+        self.project_browse.clicked.connect(self.load_project_folder)
 
-        self.label = QLabel("Default Project Directory")
-        self.label_text = QLineEdit()
-        self.browse = QPushButton("Browse")
-        self.label_text.setText(self.settings.value("project_dir",""))
-        self.browse.clicked.connect(self.load_folder)
+        #  Blender Path Settings
+        self.blender_label = QLabel("Blender Executable Path")
+        self.blender_path_text = QLineEdit()
+        self.blender_browse = QPushButton("Browse")
+        self.blender_path_text.setText(self.settings.value("blender_path", ""))
+        self.blender_browse.clicked.connect(self.load_blender_executable)
 
+        #  Save Button
         save_button = QPushButton("Save Settings")
         save_button.clicked.connect(self.save_settings)
-        layout = QHBoxLayout()
-        layout.addWidget(self.label)
-        v_layout = QVBoxLayout()
-        layout.addWidget(self.label_text)
-        layout.addWidget(self.browse)
-        v_layout.addLayout(layout)
-        v_layout.addWidget(save_button)
-        self.setLayout(v_layout)
+
+        #  Layouts
+        layout = QVBoxLayout()
+
+        # 🔹 Project Directory Section
+        project_layout = QHBoxLayout()
+        project_layout.addWidget(self.project_label)
+        project_layout.addWidget(self.project_dir_text)
+        project_layout.addWidget(self.project_browse)
+        layout.addLayout(project_layout)
+
+        # 🔹 Blender Path Section
+        blender_layout = QHBoxLayout()
+        blender_layout.addWidget(self.blender_label)
+        blender_layout.addWidget(self.blender_path_text)
+        blender_layout.addWidget(self.blender_browse)
+        layout.addLayout(blender_layout)
+
+        # 🔹 Save Button
+        layout.addWidget(save_button)
+
+        self.setLayout(layout)
 
     def save_settings(self):
-        self.settings.setValue("project_dir",self.label_text.text())
+        """ Saves project directory and Blender path settings."""
+        self.settings.setValue("project_dir", self.project_dir_text.text())
+        self.settings.setValue("blender_path", self.blender_path_text.text())
         self.close()
-    def load_folder(self):
+
+    def load_project_folder(self):
+        """ Opens a file dialog to select the default project directory."""
         dir_path = QFileDialog.getExistingDirectory(self, "Select Master Folder")
-        self.label_text.setText(str(dir_path))
+        if dir_path:
+            self.project_dir_text.setText(str(dir_path))
+
+    def load_blender_executable(self):
+        """ Opens a file dialog to select the Blender executable."""
+        file_path, _ = QFileDialog.getOpenFileName(self, "Select Blender Executable", "", "Executable Files (*.exe);;All Files (*)")
+        if file_path:
+            self.blender_path_text.setText(file_path)

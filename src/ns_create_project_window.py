@@ -1,14 +1,15 @@
-from PySide6.QtWidgets import QWidget,QVBoxLayout,QLabel,QFileDialog,QPushButton,QLineEdit,QHBoxLayout,QTextEdit,QMessageBox,QGraphicsDropShadowEffect
+from PySide6.QtWidgets import QWidget,QVBoxLayout,QLabel,QFileDialog,QPushButton,QLineEdit,QHBoxLayout,QTextEdit,QMessageBox,QGraphicsDropShadowEffect,QListWidgetItem
 from PySide6.QtCore import Qt, QSettings,QPoint
 from PySide6.QtGui import QCursor, QColor
-from utils import folder_name_exists, generate_meta_data
+from utils import folder_name_exists, generate_metadata, save_project_list
 import os
 import json
 
 class CreateProjectWindow(QWidget):
-    def __init__(self, main_window=None):
+    def __init__(self, main_window=None, project_list_widget = None):
         super().__init__()
         self.main_window = main_window
+        self.project_list_widget = project_list_widget
         self.settings = QSettings("NodeSync", "Config")
         self.offset = QPoint()
         self.initUI()
@@ -82,42 +83,54 @@ class CreateProjectWindow(QWidget):
             self.project_location_textbox.setText(str(dir_path))
 
     def load_folder_structure(self):
-        with open("NodeSync/folder_structure.json","r") as f:
-            return json.load(f)
-    
+        
+        try:
+            with open("NodeSync/folder_structure.json", "r") as f:
+                return json.load(f)
+        except Exception as e:
+            QMessageBox.warning(self, "Error", f"Failed to load folder structure:\n{e}")
+            return {}
+
     def create_project_folders(self):
-        dir_path = self.project_location_textbox.text()
-        project_name_text = self.project_name.text()
+        """ Creates the project folders and predefined subfolders, then saves metadata."""
+        dir_path = self.project_location_textbox.text().strip()
+        project_name_text = self.project_name.text().strip()
 
         if not dir_path:
             QMessageBox.warning(self, "Error", "No Directory Selected")
             return
-        
-        folder_structure = self.load_folder_structure()
 
-        #creating the project folder
-
-        os.makedirs(os.path.join(dir_path,project_name_text), exist_ok=True)
-        project_folder = dir_path + "/" + project_name_text
+        project_folder = os.path.join(dir_path, project_name_text)
 
         try:
+            os.makedirs(project_folder, exist_ok=True)
+
+            #  Load predefined folder structure from JSON
+            folder_structure = self.load_folder_structure()
+
+            #  Create folders & subfolders dynamically
             for main_folder, sub_folders in folder_structure.items():
                 main_folder_path = os.path.join(project_folder, main_folder)
                 os.makedirs(main_folder_path, exist_ok=True)
 
                 for sub_folder in sub_folders:
-                    os.makedirs(os.path.join(main_folder_path, sub_folder), exist_ok=True)
-            
-            metadata = generate_meta_data(project_name_text,project_folder,folder_structure)
+                    sub_folder_path = os.path.join(main_folder_path, sub_folder)
+                    os.makedirs(sub_folder_path, exist_ok=True)  # ✅ Create subfolders properly
+
+            #  Generate metadata with full folder structure
+            metadata = generate_metadata(project_name_text, project_folder)
+
             if metadata:
                 QMessageBox.information(self, "Success", f"Project Created at:\n{project_folder}")
+                self.add_project_to_list(metadata)
             else:
                 QMessageBox.warning(self, "Error", "Failed to create metadata.")
+
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Failed to create folders:\n{e}")
-        
+
         self.close()
-    
+
     def quit_widget(self):
         QMessageBox.information(self, "Cancelled", "Project creation cancelled")
         self.close()
@@ -155,3 +168,11 @@ class CreateProjectWindow(QWidget):
         if event.button() == Qt.LeftButton:
             self.dragging = False 
             event.accept()
+
+    def add_project_to_list(self, metadata):
+        """ Adds a new project to QListWidget using metadata."""
+        if self.project_list_widget:
+            item = QListWidgetItem(metadata["name"])
+            item.setData(100, metadata["path"])  #  Store project path in metadata
+            self.project_list_widget.addItem(item)
+            save_project_list(metadata)
