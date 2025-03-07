@@ -1,6 +1,6 @@
-from PySide6.QtWidgets import QWidget,QVBoxLayout,QLabel,QFileDialog,QPushButton,QLineEdit,QHBoxLayout,QTextEdit,QMessageBox
+from PySide6.QtWidgets import QWidget,QVBoxLayout,QLabel,QFileDialog,QPushButton,QLineEdit,QHBoxLayout,QTextEdit,QMessageBox,QGraphicsDropShadowEffect
 from PySide6.QtCore import Qt, QSettings,QPoint
-from PySide6.QtGui import QCursor
+from PySide6.QtGui import QCursor, QColor
 from utils import folder_name_exists, generate_meta_data
 import os
 import json
@@ -13,7 +13,7 @@ class CreateProjectWindow(QWidget):
         self.offset = QPoint()
         self.initUI()
         self.center_within_main()
-    
+        
     def initUI(self):
         self.setWindowTitle("Create Project")
         self.setGeometry(150,150,500,200)
@@ -75,7 +75,7 @@ class CreateProjectWindow(QWidget):
             new_x = main_geometry.x() + (main_geometry.width() - self.width()) // 2 
             new_y = main_geometry.y() + (main_geometry.height() - self.height()) // 2
             self.move(QPoint(new_x,new_y))
-    
+
     def choose_dir(self):
         dir_path = QFileDialog.getExistingDirectory(self, "Select the Directory")
         if dir_path:
