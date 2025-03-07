@@ -10,7 +10,7 @@ if __name__ == "__main__":
     window.setWindowFlag(Qt.FramelessWindowHint)
     window.show()
 
-    with open("E:/01_WORK/01_PROJ/NODESYNC/NodeSync/style.qss", "r") as f:
+    with open("NodeSync/style.qss", "r") as f:
         _style = f.read()
         app.setStyleSheet(_style)
 

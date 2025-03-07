@@ -12,7 +12,6 @@ class CreateProjectWindow(QWidget):
         self.initUI()
     
     def initUI(self):
-        self.setGeometry(100,100,800,600)
         self.setWindowTitle("Create Project")
         self.setGeometry(150,150,500,200)
         self.setWindowFlag(Qt.FramelessWindowHint)
