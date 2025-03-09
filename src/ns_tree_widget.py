@@ -19,6 +19,9 @@ class TreeWidget(QTreeWidget):
             ".png": QIcon("NodeSync/icons/png-48.png"),
             ".exr": QIcon("NodeSync/icons/exr-64.png"),
             ".json": QIcon("NodeSync/icons/json-48.png"),
+            ".hiplc": QIcon("NodeSync/icons/sidefx_badge_flat.png"),
+            ".hip": QIcon("NodeSync/icons/sidefx_badge_flat.png"),
+            ".hipnc": QIcon("NodeSync/icons/sidefx_badge_flat.png"),
             "default": QIcon("icons/file.png")  #  Default file icon
         }
         self.setContextMenuPolicy(Qt.CustomContextMenu)
