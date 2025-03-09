@@ -35,7 +35,7 @@ class CreateProjectWindow(QWidget):
         project_location_layout = QHBoxLayout()
         project_location_label = QLabel("Project Location")
         self.project_location_textbox = QLineEdit()
-        self.project_location_textbox.setText(default_project_dir)
+        self.project_location_textbox.setText(str(default_project_dir))
         self.project_location_textbox.textChanged.connect(self.disable_create_button)
     
         project_location_browser = QPushButton("Browse")
