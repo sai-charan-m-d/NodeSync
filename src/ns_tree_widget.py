@@ -24,7 +24,7 @@ class TreeWidget(QTreeWidget):
             ".hipnc": QIcon("NodeSync/icons/sidefx_badge_flat.png"),
             "default": QIcon("icons/file.png")  #  Default file icon
         }
-        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.setContextMenuPolicy(Qt.CustomContextMenu))
         self.customContextMenuRequested.connect(self.show_context_menu)
     
     def populate_tree(self, folder_path):
