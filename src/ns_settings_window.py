@@ -11,26 +11,26 @@ class SettingsWindowWidget(QWidget):
 
         self.settings = QSettings("Project Directory")
 
-        self.label = QLabel("Default Project Directory")
-        self.label_text = QLineEdit()
+        self.proj_dir = QLabel("Default Project Directory")
+        self.proj_dir_label = QLineEdit()
         self.browse = QPushButton("Browse")
-        self.label_text.setText(self.settings.value("project_dir",""))
+        self.proj_dir_label.setText(self.settings.value("project_dir",""))
         self.browse.clicked.connect(self.load_folder)
 
         save_button = QPushButton("Save Settings")
         save_button.clicked.connect(self.save_settings)
         layout = QHBoxLayout()
-        layout.addWidget(self.label)
+        layout.addWidget(self.proj_dir)
         v_layout = QVBoxLayout()
-        layout.addWidget(self.label_text)
+        layout.addWidget(self.proj_dir_label)
         layout.addWidget(self.browse)
         v_layout.addLayout(layout)
         v_layout.addWidget(save_button)
         self.setLayout(v_layout)
 
     def save_settings(self):
-        self.settings.setValue("project_dir",self.label_text.text())
+        self.settings.setValue("project_dir",self.proj_dir_label.text())
         self.close()
     def load_folder(self):
         dir_path = QFileDialog.getExistingDirectory(self, "Select Master Folder")
-        self.label_text.setText(str(dir_path))
+        self.proj_dir_label.setText(str(dir_path))
