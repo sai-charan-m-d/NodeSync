@@ -3,6 +3,7 @@ from PySide6.QtGui import QIcon, QAction
 from src.ns_create_project_window import CreateProjectWindow
 from src.ns_list_widget import ProjectListWidget
 from src.ns_settings_window import SettingsWindowWidget
+
 class MainWindow(QMainWindow):
     def __init__(self, app):
         super().__init__()
@@ -23,6 +24,7 @@ class MainWindow(QMainWindow):
 
         #File Menu 
         file_menu = menubar.addMenu("&File")
+        
         #Actions in the File Menu
         create_project_action = file_menu.addAction("New Project")
         create_project_action.triggered.connect(self.create_project_launch)
