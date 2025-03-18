@@ -6,9 +6,11 @@ import os
 import json
 
 class CreateProjectWindow(QWidget):
-    def __init__(self, main_window=None):
+    def __init__(self, main_window=None, list_widget=None):
+
         super().__init__()
         self.main_window = main_window
+        self.list_widget = list_widget
         self.settings = QSettings("NodeSync", "Config")
         self.offset = QPoint()
         self.initUI()
@@ -49,7 +51,7 @@ class CreateProjectWindow(QWidget):
 
         # Create Button Tool Tip
         if self.project_exists:
-            self.create_button.setToolTip("Creates the folder structure")
+            self.create_button.setToolTip("Creates the folder structure in the specified location and adds it to the project list")
         else:
             self.create_button.setToolTip("Creates the folder structure")
 
@@ -109,10 +111,15 @@ class CreateProjectWindow(QWidget):
                     os.makedirs(os.path.join(main_folder_path, sub_folder), exist_ok=True)
             
             metadata = generate_meta_data(project_name_text,project_folder,folder_structure)
+
             if metadata:
+                # Add project to the project list
+                self.list_widget.addItem(project_name_text)
                 QMessageBox.information(self, "Success", f"Project Created at:\n{project_folder}")
+                
             else:
                 QMessageBox.warning(self, "Error", "Failed to create metadata.")
+
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Failed to create folders:\n{e}")
         
